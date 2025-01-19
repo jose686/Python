@@ -1,0 +1,16 @@
+.blog{
+
+    background-color: rgb(24, 187, 187);
+}
+.nav-blog {
+    list-style: none;
+    color: rgb(0, 0, 0);
+    background-color: azure;
+}
+
+.nav-blog a{
+    
+    color: rgb(0, 0, 0);
+    text-align: center;
+   font-size: 2rem;
+}

@@ -1,0 +1,172 @@
+:root {
+    --primary-color-blanco: #FFFFFF;
+    --secondary-color-amarillo: #FDC446;
+    --secondary-color-azul:#44ABB6;
+    --secondary-color-rojo:#E05062;
+    --secondary-color-negro:#3E464C;
+}
+
+body{
+   
+    background-color:var(--secondary-color-negro) ;
+
+}
+
+.nav-link{
+    color: var(--secondary-color-azul);
+
+}
+.btn{
+    background-color: var(--secondary-color-azul);
+    margin: 2px;
+}
+.nav{
+    font-size: 18px;
+}
+
+.nav-link{
+    color: var(--secondary-color-azul);
+
+}
+.btn{
+    background-color: var(--secondary-color-azul);
+    margin: 2px;
+}
+.nav{
+    font-size: 18px;
+}
+
+.contenedor-imagen {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.boton-encima {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Otros estilos para personalizar el botón */
+}
+.boton-encima-home{
+    background-color: var(--secondary-color-amarillo);
+    
+
+
+}
+.mensaje_home{
+    margin: 25px;
+    color: var(--secondary-color-azul);
+}
+.lead{
+
+    margin-top: 50px;
+
+}
+/*              NUETROS SERVICIOS        */
+.nuestroservisios{
+
+    background-color: var(--secondary-color-azul);
+    color: var(--secondary-color-negro);
+    margin-bottom: 50px;
+}
+.servisios-titulo{
+    margin: 50px;
+    margin-bottom: 100px;
+}
+
+.card{
+    margin-top: 50px;
+}
+
+
+
+.sobre-mi{
+     margin-top:8rem;
+     margin-bottom:8rem;
+    background-color: var(--secondary-color-negro);
+    color: var( --secondary-color-amarillo);
+
+}
+.sobre-mi p{
+    margin-top:2rem;
+  
+}
+
+.contacto{
+    
+    padding: 8rem;
+    background-color: var(--secondary-color-azul);
+    color: var( --secondary-color-negro);
+
+ 
+}
+.contacto-contenedor .btn{
+    margin-top: 25px;
+    margin-bottom: 30px;
+    width: 12rem;
+    height: 3rem;
+    background-color:var(--secondary-color-rojo);
+    color: var(--primary-color-blanco);
+    font-size: 1.5rem;
+  
+}
+
+
+
+footer{
+    
+    color: var(--primary-color-blanco);
+}
+
+
+.flecha{
+    text-decoration: none;  
+    color: var(--primary-color-blanco) ;
+    position: fixed;
+    
+    bottom: 3rem; 
+    right:  10rem;
+    /* Ajusta esta propiedad según sea necesario para la posición vertical */
+    z-index: 1;
+    border: #404c3e solid 1px;
+    border-radius: 10px;
+    
+}
+
+.flecha a {
+    color: inherit; /* Hereda el color de la clase .flecha */
+}
+.flecha:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 1); /* Añade una sombra */
+    background-color: var(--secondary-color-rojo); /* Color de fondo al hacer hover */
+}
+/* Media query para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .flecha {
+        width: 3rem;
+        height: 3rem;
+        right: 2rem;
+        bottom: 2rem;
+    }
+}
+@media (max-width: 1200px) {
+    .flecha {
+        width: 4rem;
+        height: 4rem;
+        right: 4rem;
+        bottom: 4rem;
+    }
+}
+
+
+
+
+@media (min-width: 1200px) {
+    .flecha {
+      width: 5rem;
+      height: 5rem;
+      right: 10rem;
+      bottom: 4rem;
+    }
+}
