@@ -1,24 +1,15 @@
 {% extends "base.html" %}
 
-
 {% block title %}Blog{% endblock %}
-
-
 
 {% block content %}
 
-
 <div class="container py-4 ">
   <header class="pb-3 mb-4 border-bottom d-flex justify-content-center">
-
-
-
-    <h1 class="text-light " style="font-size: 6rem;">KapitanKernel</h1>
-
-
-
-
+    <h1 class="text-light display-4" style="font-size: 4rem;">KapitanKernel</h1>
   </header>
+  
+
   <style>
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
@@ -26,48 +17,38 @@
       height: 100px;
       background-size: 200%, 100%;
     }
-  </style>
- <div class="container mt-5">
-  <div id="carouselExampleDark" class="carousel carousel-light slide mb-5" style="background-size: 50px;">
-      <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      </div>
-      <div class="carousel-inner">
-          <div class="carousel-item active" data-bs-interval="1000">
-              <img src="../static/img/minecraft.jpg" class="d-block w-100" alt="...">
-              <div class="carousel-caption d-none d-md-block">
-                  <h5>First slide label</h5>
-                  <p>Some representative placeholder content for the first slide.</p>
-              </div>
-          </div>
-          <div class="carousel-item" data-bs-interval="1000">
-              <img src="../static/img/sofa.jpg" class="d-block w-100" alt="...">
-              <div class="carousel-caption d-none d-md-block">
-                  <h5>Second slide label</h5>
-                  <p>Some representative placeholder content for the second slide.</p>
-              </div>
-          </div>
-          <div class="carousel-item" data-bs-interval="1000">
-              <img src="../static/img/minecraft.jpg" class="d-block w-100" alt="...">
-              <div class="carousel-caption d-none d-md-block">
-                  <h5>Third slide label</h5>
-                  <p>Some representative placeholder content for the third slide.</p>
-              </div>
-          </div>
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-      </button>
-  </div>
-</div>
 
+    .flecha_blog {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .flecha_blog a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border-radius: 50%;
+    }
+
+    .flecha_blog a:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+      /* Cambia el color de fondo al hacer hover */
+    }
+
+    .flecha_blog svg {
+      width: 30px;
+      height: 30px;
+    }
+  </style>
+
+  
+     
 
   <div class="container">
     <div class="row align-items-lg-stretch bg-secondary">
@@ -78,12 +59,45 @@
             <img src={{ n.imagen }} class="card-img-top p-3 rounded-5 " alt="aswdasdasd">
           </div>
           <h2 class="card-title mt-2 p-2">{{ n.titulo }}</h2>
-          <p class="card-text mt-3 p-3 " style="height: 10rem; overflow: hidden; text-overflow: ellipsis;">{{ n.parrafo
-            }}</p>
-          <button class=" btn btn-outline-light mt-5 mx-auto d-block w-100" type="button">Leer Mas</button>
+          <p class="card-text mt-3 p-3 " style="height: 10rem; overflow: hidden; text-overflow: ellipsis; text-align: justify;">{{
+            n.parrafo }}</p>
+          <button type="button" class="btn btn-outline-light mt-5 mx-auto d-block w-100" data-bs-toggle="modal"
+            data-bs-target="#articuloModal{{ n.id }}">Leer Más</button>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="articuloModal{{ n.id }}" tabindex="-1" aria-labelledby="articuloModalLabel{{ n.id }}"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content bg-secondary text-white">
+            <div class="modal-header">
+              <h5 class="modal-title" id="articuloModalLabel{{ n.id }}">{{ n.titulo }}</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <img src={{ n.imagen }} class="img-fluid mb-3" alt="Imagen del artículo">
+              <p style="text-align: justify;">{{ n.parrafo }}</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
         </div>
       </div>
       {% endfor %}
     </div>
   </div>
+
+  <div class="flecha_blog">
+    <a href="#inicio">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-up-square-fill "
+        viewBox="0 0 16 16">
+        <path
+          d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0" />
+      </svg>
+    </a>
+  </div>
+
   {% endblock %}
+</div>

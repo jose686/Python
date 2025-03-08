@@ -1,49 +1,16 @@
 {% extends "base.html" %}
 
-
 {% block title %}Administracion{% endblock %}
-
-
 
 {% block content %}
 <div class="container blog">
-    <style>
-        .col-id {
-            width: 5%;
-        }
 
-        .col-titulo {
-            width: 30%;
-        }
-
-        .col-descripcion {
-            width: 40%;
-        }
-
-        .col-imagen {
-            width: 20%;
-        }
-
-        .col-acciones {
-            width: 10%;
-        }
-
-        .descripcion-corta {
-            max-height: 4.5em; /* Ajusta la altura según tus necesidades */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            
-            -webkit-box-orient: vertical;
-        }
-
-    </style>
     <ul class="nav-blog col-md-auto justify-content-center ">
         <li><a href="/blog" class="nav-link px-2">Blog</a></li>
     </ul>
     <h1>Este es el Administrador </h1>
+    <!--Formulario para subir noticias   -->
     <section>
-
         <div class="container">
             <form action="/upload" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
@@ -67,44 +34,139 @@
                 <button type="submit" class="btn btn-primary mb-3">Enviar</button>
             </form>
 
-
-            <h1 class="mt-5">Lista de Noticias</h1>
-            <table class="table table-striped table-bordered mt-3">
-                <thead class="thead-dark">
+            <!--Aqui se muestra la lista de noticias-->
+            <table id="tabla-noticias" class="table table-striped">
+                <thead>
                     <tr>
-                        <th class="col-id">ID</th>
-                        <th class="col-titulo">Título</th>
-                        <th class="col-descripcion">Descripción</th>
-                        <th class="col-imagen">Imagen</th>
-                        <th class="col-acciones">Acciones</th>
+                        <th>ID</th>
+                        <th>Titulo</th>
+                        <th>Descripcion</th>
+                        <th>Imagen</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for noticia in noticias %}
-                    <tr>
-                        <td class="col-id">{{ noticia.id }}</td>
-                        <td class="col-titulo">{{ noticia.titulo }}</td>
-                        <td class="col-descripcion">
-                            <div class="descripcion-corta">{{ noticia.parrafo }}</div>
-                            <button class="btn btn-link p-0" onclick="toggleDescripcion(this)">Ver más</button>
-                        </td>
-                        <td class="col-imagen"><img src="{{ noticia.imagen }}" alt="Imagen de {{ noticia.titulo }}" class="img-thumbnail" style="max-width: 200px;"></td>
-                        <td class="col-acciones">
-                            <a href="/editar/{{ noticia.id }}" class="btn btn-warning btn-sm">Editar</a>
-                            <a href="/borrar/{{ noticia.id }}" class="btn btn-danger btn-sm">Borrar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                    <!-- Las noticias se cargarán aquí -->
                 </tbody>
             </table>
         </div>
-
-
 
     </section>
 
 </div>
 
+<script>
+    function cargarNoticias() {
+        fetch('/imprimir')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data); // Check the data here
+                const tablaNoticias = document.querySelector('#tabla-noticias tbody');
+                tablaNoticias.innerHTML = '';
 
+                data.forEach(noticia => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td class="col-id">${noticia.id}</td>
+                        <td class="col-titulo">${noticia.titulo}</td>
+                        <td class="col-descripcion">
+                            <div class="descripcion-corta">${noticia.parrafo}</div>
+                            
+                        </td>
+                        <td class="col-imagen"><img src="${noticia.imagen}" alt="Imagen de ${noticia.titulo}" class="img-thumbnail" style="max-width: 200px;"></td>
+                        <td class="col-acciones">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarNoticiaModal${noticia.id}">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="confirmarBorrar(${noticia.id})">Borrar</button>
+                        </td>
+                    `;
+                    tablaNoticias.appendChild(fila);
+
+                    const modal = `
+                        <div class="modal fade" id="editarNoticiaModal${noticia.id}" tabindex="-1" aria-labelledby="editarNoticiaModalLabel${noticia.id}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarNoticiaModalLabel${noticia.id}">Editar Noticia</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="editarNoticiaForm${noticia.id}" method="post" action="/actualizar" enctype="multipart/form-data">
+                                            <input type="hidden" name="id" value="${noticia.id}">
+                                            <div class="mb-3">
+                                                <label for="titulo" class="form-label">Título</label>
+                                                <input type="text" class="form-control" name="titulo" value="${noticia.titulo}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="descripcion" class="form-label">Descripción</label>
+                                                <textarea class="form-control" name="descripcion" rows="5">${noticia.parrafo}</textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="imagen" class="form-label">Imagen</label>
+                                                <input type="file" class="form-control" name="imagen">
+                                                <img src="${noticia.imagen}" alt="Imagen actual" style="max-width: 200px;">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="button" class="btn btn-primary" onclick="actualizarNoticia(${noticia.id})">Guardar Cambios</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', modal);
+                });
+            })
+            .catch(error => console.error('Error al cargar las noticias:', error));
+    }
+
+    function confirmarBorrar(noticiaId) {
+        if (confirm('¿Estás seguro de que quieres borrar esta noticia?')) {
+            // Si el usuario confirma, redirige al endpoint de borrado
+            window.location.href = `/borrar/${noticiaId}`;
+        } else {
+            // Si el usuario cancela, no hace nada
+            alert('Borrado cancelado.');
+        }
+    }
+
+    function actualizarNoticia(noticiaId) {
+        const form = document.querySelector(`#editarNoticiaForm${noticiaId}`);
+        const formData = new FormData(form);
+
+        fetch('/actualizar', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text(); // o response.json() si el servidor responde con JSON
+        })
+        .then(data => {
+            console.log('Success:', data);
+            // Cerrar el modal
+            const modal = document.querySelector(`#editarNoticiaModal${noticiaId}`);
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+            // Recargar las noticias
+            cargarNoticias();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    window.onload = cargarNoticias;
+
+
+</script>
 
 {% endblock %}

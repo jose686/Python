@@ -4,10 +4,11 @@ Esta es la parte principal de la aplicacion, aqui se encuentran las rutas de la 
 
 
 import datetime
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import os
 
-from blog import borrar_noticia, imprimir, registrar
+# main.py
+from blog import Noticia, borrar_noticia, imprimir, imprimir_noticias_admin, registrar, db_session  # Importar Noticia
 from tamano_imagen import tamano_img
 from usuario import Usuario, buscar_usuario_por_email, crear_usuario, generar_hass, verificar_password
 
@@ -70,7 +71,7 @@ def validacion_login():
 # Verificar si la autenticación es exitosa
     if es_valido:  # Si la autenticación es exitosa
         session["id"] = datos.id
-        session["rol"] = datos.rol
+        session["rol"] = datos.rol  # Acceder al atributo rol del objeto datos
         session['login_attempts'] = 0  # Reiniciar el contador de intentos de sesión
         if datos.rol == "admin":
             return redirect("/admin")
@@ -136,6 +137,8 @@ def upload_file():
         #print("la direccio es : -----------------   " + direccion)
         mensaje= "El archivo se ha subido correctamente"
         return render_template("admin.html",  mensaje=mensaje)
+    
+    
 # Ruta para borrar una noticia
 @app.route("/borrar/<int:noticia_id>")
 def borrar(noticia_id):
@@ -148,8 +151,39 @@ def borrar(noticia_id):
         return redirect("/login")
 
 
+@app.route('/imprimir')
+def obtener_noticias():
+    return imprimir_noticias_admin()
 
 
+
+
+@app.route("/actualizar", methods=["POST"])
+def actualizar_noticia():
+    if "id" in session and session.get("rol") == "admin":
+        id = request.form.get("id")
+        titulo = request.form.get("titulo")
+        descripcion = request.form.get("descripcion")
+        imagen = request.files.get("imagen")
+
+        noticia = db_session.get(Noticia, id)  # Utilizar db_session.get() en lugar de db_session.query(Noticia).get(id)
+        noticia.titulo = titulo
+        noticia.parrafo = descripcion
+
+        if imagen:
+            # Eliminar la imagen anterior si existe
+            if noticia.imagen and os.path.exists(noticia.imagen):
+                os.remove(noticia.imagen)
+
+            # Guardar la nueva imagen
+            filename = secure_filename(imagen.filename)
+            imagen.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            noticia.imagen = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+        db_session.commit()  # Utilizar db_session en lugar de session
+        return "Noticia actualizada correctamente" # Puedes retornar un JSON si lo prefieres
+    else:
+        return redirect("/login")
 
 
 if __name__ == "__main__":
